@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jivosite_webhook_message', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement();
             $table->unsignedBigInteger('jivosite_webhook_id');
             $table->string('message');
             $table->timestamp('timestamp');
