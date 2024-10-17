@@ -14,11 +14,11 @@ class IndexController extends BaseController
         try 
         {
             $this->service->store($data);
-            return response()->json(['success' => true]);
+            return response()->json(['success' => 'ok']);
         }
         catch(\Exception $e)
         {
-            return response()->json(['success' => false]);
+            return response()->json(['success' => $e->getMessage()]);
         }
     }
 }
