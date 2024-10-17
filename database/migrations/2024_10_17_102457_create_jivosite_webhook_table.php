@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jivosite_webhook', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->string('event_name');
-            $table->unsignedBigInteger('widget_id');
+            $table->string('widget_id');
             $table->string('visitor_name');
             $table->string('visitor_email');
             $table->string('visitor_phone');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('session_geoip_country');
             $table->string('session_geoip_region');
             $table->string('session_geoip_city');
-            $table->string('session_utm_json_google');
+            $table->string('session_utm_json_source');
             $table->string('session_utm_json_campaign');
             $table->string('session_utm_json_content');
             $table->string('session_utm_json_medium');
@@ -40,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('webhooks');
+        Schema::dropIfExists('jivosite_webhook');
     }
 };

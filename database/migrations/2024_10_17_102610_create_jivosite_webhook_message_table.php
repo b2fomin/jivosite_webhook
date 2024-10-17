@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('jivosite_webhook_message', function (Blueprint $table) {
             $table->id()->autoIncrement();
-            $table->unsignedBigInteger('jivosite_webhook_id');
-            $table->string('message');
+            $table->unsignedBigInteger('jivosite_webhook_id')->index();
+            $table->foreign('jivosite_webhook_id', 'jivosite_webhook_id_fk')->references('id')->on('jivosite_webhook');
+            $table->text('message');
             $table->timestamp('timestamp');
             $table->string('type');
             $table->unsignedBigInteger('agent_id')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('webhook_messages');
+        Schema::dropIfExists('jisovite_webhook_message');
     }
 };

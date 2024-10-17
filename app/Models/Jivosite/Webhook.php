@@ -8,11 +8,11 @@ use App\Models\Jivosite\WebhookMessage;
 class Webhook extends Model
 {
     protected $guarded = False;
-    protected $table='jivosite_webhook_message';
+    protected $table='jivosite_webhook';
 
 
     public function webhookMessages()
     {
-        return $this->hasMany(WebhookMessage::class);
+        return $this->hasMany(WebhookMessage::class, 'jivosite_webhook_id', 'id');
     }
 }

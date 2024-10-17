@@ -21,43 +21,45 @@ class WebhookService
             'session_geoip_country' => $data['session']['geoip']['country'],
             'session_geoip_region' => $data['session']['geoip']['region'],
             'session_geoip_city' => $data['session']['geoip']['city'],
-            'session_utm_json_google' => $data['session']['utm_json']['google'],
+            'session_utm_json_source' => $data['session']['utm_json']['source'],
             'session_utm_json_campaign' => $data['session']['utm_json']['campaign'],
             'session_utm_json_content' => $data['session']['utm_json']['content'],
             'session_utm_json_medium' => $data['session']['utm_json']['medium'],
             'session_utm_json_term' => $data['session']['utm_json']['term'],
             'page_title' => $data['page']['title'],
-            'page_url' => $data['page']['url'],
+            'page_url' => $data['page']['url']
         ];
         $webhook = Webhook::createOrFirst($data_webhook);
-
         $data_webhook_msg = [];
         
         switch($data['event_name'])
         {
         case 'chat_finished':
-            foreach($data['messages'] as $message)
+            foreach($data['chat']['messages'] as $message)
             {
+                $data_webhook_msg['jivosite_webhook_id'] = $webhook->get()->last()->id;
                 $data_webhook_msg['message'] = $message['message'];
-                $data_webhook_msg['timestamp'] = $message['timestamp'];
+                $data_webhook_msg['timestamp'] = date('y-m-d', $message['timestamp']);
                 $data_webhook_msg['type'] = $message['type'];
                 if ($message['type'] === 'agent')
                     $data_webhook_msg['agent_id'] = $message['agent_id'];
-                $data_webhook_msg['jivosite_webhook_id'] = WebhookMessage::where('message', '=', $message['message'])->id();
-    }
+                else
+                    $data_webhook_msg['agent_id'] = null;
+                $webhook->webhookMessages()->createOrFirst($data_webhook_msg);
+            }
         break;
         case 'offline_message':
             $data_webhook_msg['message'] = $data['message'];
-            $data_webhook_msg['timestamp'] = $data['timestamp'];
+            $data_webhook_msg['timestamp'] = date('y-m-d', time());
             $data_webhook_msg['type'] = 'visitor';
             $data_webhook_msg['agent_id'] = null;
-            $data_webhook_msg['jivosite_webhook_id'] = WebhookMessage::where('message', '=', $data['message'])->id();
-        break;
+            $data_webhook_msg['jivosite_webhook_id'] = $webhook->get()->last()->id;
+            $webhook->webhookMessages()->createOrFirst($data_webhook_msg);
+            break;
         default:
-            return response()->json(['success' => False]);
+            return False;
         }
 
-        WebhookMessage::createOrFirst($data_webhook_msg);
-        return response()->json(['success' => True]);
+        return True;
     }
 }
