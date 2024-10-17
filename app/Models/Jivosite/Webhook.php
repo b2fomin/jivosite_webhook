@@ -11,7 +11,7 @@ class Webhook extends Model
     protected $table='jivosite_webhook_message';
 
 
-    public function webhookMessage()
+    public function webhookMessages()
     {
         return $this->hasMany(WebhookMessage::class);
     }
